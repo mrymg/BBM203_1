@@ -1,6 +1,10 @@
 #include <stdio.h>
 
-int main() {
-    printf("Hello, World!\n");
+int main(){
+    if(fopen("inputs/m1.mat", "r")){
+        printf("anana");
+    }else{
+        printf("babana");
+    }
     return 0;
 }
