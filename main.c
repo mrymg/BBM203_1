@@ -241,6 +241,7 @@ int main(){
 
 
         }else if(strcmp(ch,FUNCTIONS[3]) == 0){
+            int *matrix = NULL;
             ch=strtok(NULL, " ");
             char *readMatrixName=strtok(ch, "\n");
 
