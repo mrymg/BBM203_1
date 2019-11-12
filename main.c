@@ -1,6 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+typedef struct{
+    char *name;
+    int length;
+    int *arr;
+}vectors;
+
+typedef struct{
+    char *name;
+    int length;
+    int **arr;
+} matrix;
 //      LINE COUNT
 int lineCount(const char *filename)
 {
@@ -23,6 +35,8 @@ int lineCount(const char *filename)
     return count;
 }
 //  ======== INITILALIZATION OPERATIONS ========
+int nameCheck(int);
+
 
 int * veczeros(int *name, int length){
     int *vZeros;
@@ -135,17 +149,12 @@ int main(){
      substract      = 15
 
      * */
-    char *m1 = "inputs/m1.mat";
-    char *m2 = "inputs/m2.mat";
-    char *m3 = "inputs/m3.mat";
-    char *m4 = "inputs/m4.mat";
-    char *m5 = "inputs/m5.mat";
-    char *v1 = "inputs/v1.vec";
-    char *v2 = "inputs/v2.vec";
-    char *v3 = "inputs/v3.vec";
-    char *v4 = "inputs/v4.vec";
-    char *v5 = "inputs/v5.vec";
-    char *commands = "inputs/commands5.txt";
+
+    int vecCount = 0;
+    int matCount = 0;
+    // variable for counters.
+
+    char *commands = "inputs/commands2.txt";
 
     // File Reading
 
@@ -164,12 +173,31 @@ int main(){
 
     char * line = NULL;
     size_t len = lineNum;
+    char *command;
 
+    int iterNum=0;
     while ((getline(&line, &len, myFile)) != -1) {
 
-            commandArray[j++] = strdup(line);
+        commandArray[j++] = strdup(line);
+        // getting lines from file
+
+        command = strtok(line," ");
+        if(strcmp(command, "matzeros") == 0 || strcmp(command, "matread") == 0 || strcmp(command, "matslice") == 0 || strcmp(command, "vecstack") == 0){
+            matCount++;
+        }else if(strcmp(command, "veczeros") == 0 || strcmp(command, "vecread") == 0 || strcmp(command, "vecslice") == 0 || strcmp(command, "matslicerow") == 0 || strcmp(command, "matslicecol") == 0){
+            vecCount++;
+        }
+        // vector and matrix number detected.
 
     }
+    // file reading completed.
+
+    vectors *vectorArray = (vectors *)malloc(sizeof(vectors)*vecCount);
+    matrix *matrixArray = (matrix*)malloc(sizeof(matrix)*matCount);
+    // vector and matrix arrays defined.
+
+    // functions directors below.
+
     char *ch;
     int k;
     for (k= 0; k < lineNum; k++) {
@@ -178,6 +206,8 @@ int main(){
             printf("ERROR\n");
         }
         else if(strcmp(ch,FUNCTIONS[0]) == 0){ //veczeros
+
+
             int *vZeros=NULL;
             ch=strtok(NULL, " ");
             char *vname= ch;
@@ -311,6 +341,8 @@ int main(){
     for (i = 0; i< 50; i++) {
         free(commandArray[i]);
     }
+    free(matrixArray);
+    free(vectorArray);
 
 
 }
