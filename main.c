@@ -24,7 +24,7 @@ int lineCount(const char *filename)
 }
 //  ======== INITILALIZATION OPERATIONS ========
 
-int * veczeros(char *name, int length){
+int * veczeros(int *name, int length){
     int *vZeros;
 
     name = (int *)malloc(length* sizeof(int));
@@ -36,13 +36,62 @@ int * veczeros(char *name, int length){
 
     return vZeros;
 }
-int** matzeros(int *name, int x, int y){
 
-    return 0;
+// Zero Vectors Initialized
+
+
+int** matzeros(int **name, int x, int y){
+   int **mZeros = NULL;
+    name= (int **)malloc(sizeof(int) * x);
+    int i;
+    for ( i = 0; i < x; i++) {
+        name[i] = (int *)malloc(y * sizeof(int));
+    }
+    mZeros = name;
+    int j, k;
+    for (j = 0; j < x ; ++j) {
+        for ( k = 0; k < y; ++k) {
+            mZeros[j][k] = 0;
+        }
+
+    }
+
+    return mZeros;
 }
-int vecread(char *filename){
-    return 0;
+
+// ========== ZERO MATRICES INITIALIZED.
+
+
+
+char *vecread(char *filename){
+    FILE *vectorFile ;
+    vectorFile= fopen(filename, "r");
+    if(vectorFile == NULL){
+        printf("Error while opening file.\n");
+    }
+    char * line = NULL;
+
+    int i =0;
+    size_t len = 1;
+    getline(&line, &len, vectorFile);
+
+
+
+
+
+
+
+
+
+
+    return line;
+
 }
+
+//====== VECTOR READ.
+
+
+
 int matread(char *filename){
     return 0;
 }
@@ -100,7 +149,7 @@ int main(){
 
     // File Reading
 
-    
+
     int i=0; //Loop variable
     int j=0; //Loop variable
     FILE *myFile = fopen(commands, "r");
@@ -129,23 +178,72 @@ int main(){
             printf("ERROR\n");
         }
         else if(strcmp(ch,FUNCTIONS[0]) == 0){ //veczeros
+            int *vZeros=NULL;
             ch=strtok(NULL, " ");
             char *vname= ch;
             ch=strtok(NULL, " ");
-            int len=atoi(ch);
-            veczeros(vname, len);
+            int vlen=atoi(ch);
+            printf("created vector %s %d\n", vname, vlen);
+            int l;
+            vZeros = veczeros(vZeros, vlen);
+            for (l = 0; l < vlen; ++l) {
+                printf("%d",vZeros[l]);
+            }
+            printf("\n");
+            free(vZeros);
 
 
-        }else if(strcmp(ch,FUNCTIONS[1]) == 0){
+        }else if(strcmp(ch,FUNCTIONS[1]) == 0){ //matzeros
+            int **mZeros=NULL;
             ch=strtok(NULL, " ");
-            printf("%s\n", ch);
-
-        }else if(strcmp(ch,FUNCTIONS[2]) == 0){
+            char *name = ch;
             ch=strtok(NULL, " ");
-            printf("%s\n", ch);
+            int row = atoi(ch);
+            ch=strtok(NULL, " ");
+            int col = atoi(ch);
+
+            printf("created matrix %s %d %d\n", name,row,col);
+            mZeros= matzeros(mZeros, row, col);
+            int mzRow, mzCol;
+            for ( mzRow = 0; mzRow < row; mzRow++) {
+                for(mzCol =0; mzCol <col; mzCol++){
+                    printf("%d",mZeros[mzRow][mzCol]);
+                }
+                printf("\n");
+            }
+            free(mZeros);
+
+        }else if(strcmp(ch,FUNCTIONS[2]) == 0){ // vecread
+            char *linem;
+            char *line = NULL;
+            ch=strtok(NULL, " ");
+            char *readVectorName =strtok(ch,"\n");
+            line = vecread(readVectorName);
+            int *vector = NULL;
+            vector = (int*)malloc(sizeof(int)*((strlen(line)+1)/2));
+            int count = (strlen(line)+1)/2;
+            linem = strtok(line," ");
+            int i =0;
+            while(linem != NULL){
+                vector[i]=atoi(linem);
+                linem = strtok(NULL, " " );
+                i++;
+            }
+
+            printf("read vector %s %d \n", readVectorName, count);
+            int l;
+            for ( l = 0; l < count-1; l++) {
+                printf("%d ", vector[l]);
+            }printf("\n");
+
+            free(vector);
+
+
 
         }else if(strcmp(ch,FUNCTIONS[3]) == 0){
             ch=strtok(NULL, " ");
+            char *readMatrixName=strtok(ch, "\n");
+
             printf("%s\n", ch);
 
         }else if(strcmp(ch,FUNCTIONS[4]) == 0){
@@ -199,10 +297,12 @@ int main(){
 
         }
         else{
-            printf("FONKSIYON VAR\n");
+            printf("ERRORRRR\n");
         }
-    }
 
+        //free all of memoryler
+
+    }
 
 
     fclose(myFile);

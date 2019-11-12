@@ -1,7 +1,7 @@
 matread m1.mat
 
 pad m1 1 1 maximum
-vecread v1.vec
+vecread inputs/v1.vec
 vecslice v1 0 4 v10
 mvstack m1 v10 d
 veczeros v11 5
