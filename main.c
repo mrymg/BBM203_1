@@ -130,7 +130,7 @@ matrix matread( char *filename, matrix *mat, int index){
     mat[index].x = lineNum;
     mat[index].y = lineSize;
     mat[index].arr= (int **)malloc(lineNum * sizeof(int *));
-    for (int i = 0; i < lineNum ; i++) {
+    for (i = 0; i < lineNum ; i++) {
         mat[index].arr[i]= (int *)malloc(lineSize * sizeof(int));
     }
     char * line = NULL;
@@ -226,26 +226,27 @@ matrix matstack(char *mat1, char *mat2, char *where, matrix *m, int mSize ){
     if(strcmp(where,"d")==0 && m[i1].y == m[i2].y){
         int new_size_x= old_size_m1x + old_Size_m2x;
         int new_size_y= old_size_m1y;
-        int **p = m[i1].arr;
-        p = (int **)realloc(p,new_size_x);
+        m[i1].x = new_size_x;
+        m[i1].arr = (int **)  realloc(m[i1].arr, sizeof(int *) * m[i1].x);
         int i;
-        for (i = 0; i < new_size_y ; i++) {
-            *(p+i) = (int *)realloc(*(p+i) , sizeof(int) * new_size_x);
+        for (i = 0; i < old_size_m1x ; i++) {
+            m[i1].arr[i]= (int *) realloc(m[i1].arr[i], sizeof(int) * new_size_y);
         }
+        for (i = old_size_m1x; i < new_size_x ; i++) {
+            m[i1].arr[i]= (int *) malloc( sizeof(int) * new_size_y);
+        }
+
+
         int k,l;
+
+
         for ( k = 0; k < old_Size_m2x ; k++) {
             for (l = 0; l < new_size_y ; l++) {
                 m[i1].arr[new_size_x-old_size_m1x+k][l] = m[i2].arr[k][l];
             }
         }
         return m[i1];
-//                for ( i = 0; i < m[i2].x ; i++) {
-//                    for (int j = 0; j < m[i2].y ; j++) {
-//                        m[i1].arr[m[i1].x-m[i2].x+i][j] = m[i2].arr[i][j];
-//                    }
-//
-//        }
-//        return m[i1];
+
     }
     else if(strcmp(where,"r")==0 && m[i1].x == m[i2].x){
         int new_size_x = old_size_m1x;
@@ -303,7 +304,7 @@ int main(){
     int matCount = 0;
     // variable for counters.
 
-    char *commands = "commands4.txt";
+    char *commands = "commands1.txt";
 
     // File Reading
 
@@ -352,7 +353,7 @@ int main(){
     for (k= 0; k < lineNum; k++) {
         ch = strtok(commandArray[k], " ");
         if(strcmp(ch, "\n") == 0 || strcmp(ch,"\r\n") == 0){
-            printf("ERROR\n");
+            printf("error\n");
         }
         else if(strcmp(ch,FUNCTIONS[0]) == 0){ //veczeros
 
@@ -429,13 +430,20 @@ int main(){
             printf("vectors concatenated %s %d %d\n",m.name,m.x,m.y );
             int a,b;
             for (a = 0; a < m.x ; a++) {
-                for (int b = 0; b <m.y ; b++) {
+                for ( b = 0; b <m.y ; b++) {
                     printf("%d ", m.arr[a][b]);
                 }printf("\n");
             }
         mIndex++;
         }else if(strcmp(ch,FUNCTIONS[5]) == 0){ //matstack
             ch=strtok(NULL, " ");
+            matrix m = matstack("m1","m1","d", matrixArray, matCount);
+            printf("matrices concatenated %s %d %d\n", m.name, m.x, m.y);
+            for (int l = 0; l < m.x; l++) {
+                for (int n = 0; n < m.y ; n++) {
+                    printf("%d ", m.arr[l][n]);
+                }printf("\n");
+            }
             printf("%s\n", ch);
 
         }else if(strcmp(ch,FUNCTIONS[6]) == 0){
@@ -481,7 +489,7 @@ int main(){
 
         }
         else{
-            printf("ERRORRRR\n");
+            printf("errorr\n");
         }
 
         //free all of memoryler
